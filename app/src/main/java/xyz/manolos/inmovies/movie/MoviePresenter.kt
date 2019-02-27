@@ -19,7 +19,7 @@ class MoviePresenter @Inject constructor(
 
     fun fetchMovies(page: Int) {
         view.showLoading()
-        movieService.fetch(API_KEY, page)
+        movieService.fetchMovies(API_KEY, page)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
@@ -30,6 +30,20 @@ class MoviePresenter @Inject constructor(
                 onError = {
                     view.showError(it)
                     view.hideLoading()
+                }
+            )
+            .addTo(disposables)
+    }
+
+    fun fetchGenres() {
+        movieService.fetchGenres(API_KEY)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = {
+                    view.getGenres(it)
+                },
+                onError = {
+                    view.showError(it)
                 }
             )
             .addTo(disposables)

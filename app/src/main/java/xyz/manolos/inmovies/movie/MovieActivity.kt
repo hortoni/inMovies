@@ -9,16 +9,18 @@ import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
 import xyz.manolos.inmovies.injector
 import xyz.manolos.inmovies.model.Movie
-import xyz.manolos.inmovies.model.Response
+import xyz.manolos.inmovies.model.ResponseGenres
+import xyz.manolos.inmovies.model.ResponseMovies
 import javax.inject.Inject
 
 
 interface MovieView {
-    fun showMovies(it: Response)
+    fun showMovies(it: ResponseMovies)
     fun showError(it: Throwable)
     fun showLoading()
     fun hideLoading()
-    fun updatePage(it: Response)
+    fun updatePage(it: ResponseMovies)
+    fun getGenres(it:ResponseGenres)
 }
 
 class MovieActivity : AppCompatActivity(), MovieView {
@@ -43,6 +45,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
         setupRecyclerview()
 
         presenter.fetchMovies(page)
+        presenter.fetchGenres()
 
         swipeLayout.setOnRefreshListener {
             presenter.fetchMovies(page)
@@ -68,13 +71,13 @@ class MovieActivity : AppCompatActivity(), MovieView {
         })
     }
 
-    override fun showMovies(it: Response) {
+    override fun showMovies(it: ResponseMovies) {
         movies.addAll(it.results)
         moviesList.adapter!!.notifyDataSetChanged()
 
     }
 
-    override fun updatePage(it: Response) {
+    override fun updatePage(it: ResponseMovies) {
         if (it.total_pages == page) {
             page = -1
         } else {
@@ -93,5 +96,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
         swipeLayout.isRefreshing = false
     }
 
+    override fun getGenres(it: ResponseGenres) {
+    }
 
 }

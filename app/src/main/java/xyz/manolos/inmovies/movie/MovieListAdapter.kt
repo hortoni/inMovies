@@ -1,6 +1,7 @@
 package xyz.manolos.inmovies.movie
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
@@ -8,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_list_item.view.*
+import xyz.manolos.inmovies.detail.DetailActivity
 import xyz.manolos.inmovies.model.Movie
-import java.text.SimpleDateFormat
+import xyz.manolos.inmovies.util.DateFormatter
 
 
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
+private const val MOVIE = "movie"
 
 class MovieListAdapter(private val movies: List<Movie>,
                        private val context: Context) : Adapter<MovieListAdapter.ViewHolder>() {
@@ -32,11 +35,13 @@ class MovieListAdapter(private val movies: List<Movie>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movies[position]
         holder.bindView(movie)
+        holder.itemView.setOnClickListener{
+            //
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra(MOVIE, movie)
+            context.startActivity(intent)
+        }
 
-    }
-
-    fun getMovies() : List<Movie> {
-        return movies
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -46,7 +51,7 @@ class MovieListAdapter(private val movies: List<Movie>,
             val image = itemView.card_view_image
 
             title.text = movie.title
-            date.text = formatDate(movie.release_date)
+            date.text =  DateFormatter.formatDate(movie.release_date)
 
 
             Picasso.get()
@@ -54,14 +59,6 @@ class MovieListAdapter(private val movies: List<Movie>,
                 .fit()
                 .centerCrop()
                 .into(image)
-        }
-
-        private fun formatDate (date :String? ) : String {
-            var format = SimpleDateFormat("yyyy-MM-dd")
-            val newDate = format.parse(date)
-
-            format = SimpleDateFormat("dd/MM/yyyy")
-            return format.format(newDate)
         }
 
     }
