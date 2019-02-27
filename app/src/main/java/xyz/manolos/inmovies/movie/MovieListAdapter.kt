@@ -17,8 +17,11 @@ private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
 class MovieListAdapter(private val movies: List<Movie>,
                        private val context: Context) : Adapter<MovieListAdapter.ViewHolder>() {
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(xyz.manolos.inmovies.R.layout.movie_list_item, parent, false)
+
         return ViewHolder(view)
     }
 
@@ -30,6 +33,10 @@ class MovieListAdapter(private val movies: List<Movie>,
         val movie = movies[position]
         holder.bindView(movie)
 
+    }
+
+    fun getMovies() : List<Movie> {
+        return movies
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

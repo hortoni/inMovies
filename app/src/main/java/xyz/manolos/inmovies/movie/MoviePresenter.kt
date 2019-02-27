@@ -7,6 +7,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import xyz.manolos.inmovies.service.MovieService
 import javax.inject.Inject
 
+private const val API_KEY = "d71ff64de15d4ed68bd780ce30e5b24c"
+
 class MoviePresenter @Inject constructor(
     private val view: MovieView,
     private val movieService: MovieService
@@ -15,13 +17,14 @@ class MoviePresenter @Inject constructor(
     private val disposables = CompositeDisposable()
 
 
-    fun fetchMovies() {
+    fun fetchMovies(page: Int) {
         view.showLoading()
-        movieService.fetch("d71ff64de15d4ed68bd780ce30e5b24c", 1)
+        movieService.fetch(API_KEY, page)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
                     view.showMovies(it)
+                    view.updatePage(it)
                     view.hideLoading()
                 },
                 onError = {
