@@ -48,4 +48,5 @@ class MoviePresenter @Inject constructor(
             )
             .addTo(disposables)
     }
+
 }

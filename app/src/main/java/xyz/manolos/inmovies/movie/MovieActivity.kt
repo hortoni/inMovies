@@ -8,6 +8,7 @@ import android.util.Log
 import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
 import xyz.manolos.inmovies.injector
+import xyz.manolos.inmovies.model.Genre
 import xyz.manolos.inmovies.model.Movie
 import xyz.manolos.inmovies.model.ResponseGenres
 import xyz.manolos.inmovies.model.ResponseMovies
@@ -31,6 +32,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
     lateinit var linearLayoutManager: LinearLayoutManager
     private var page: Int = 1
     lateinit var movies: ArrayList<Movie>
+    lateinit var genres: ArrayList<Genre>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +43,10 @@ class MovieActivity : AppCompatActivity(), MovieView {
             .plusMovie(MovieModule(this))
             .inject(this)
 
-
         setupRecyclerview()
 
-        presenter.fetchMovies(page)
         presenter.fetchGenres()
-
+        presenter.fetchMovies(page)
         swipeLayout.setOnRefreshListener {
             presenter.fetchMovies(page)
         }
@@ -72,9 +72,11 @@ class MovieActivity : AppCompatActivity(), MovieView {
     }
 
     override fun showMovies(it: ResponseMovies) {
+        it.results.forEach {
+            it.genres = "oi"
+        }
         movies.addAll(it.results)
         moviesList.adapter!!.notifyDataSetChanged()
-
     }
 
     override fun updatePage(it: ResponseMovies) {
@@ -84,6 +86,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
             page ++
         }
     }
+
     override fun showError(it: Throwable) {
         Log.e("DEBUG", "error: " + it.message)
     }
@@ -97,6 +100,8 @@ class MovieActivity : AppCompatActivity(), MovieView {
     }
 
     override fun getGenres(it: ResponseGenres) {
+        genres = it.genres as ArrayList<Genre>
     }
+
 
 }
