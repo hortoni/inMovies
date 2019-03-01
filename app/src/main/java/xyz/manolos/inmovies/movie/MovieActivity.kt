@@ -1,9 +1,9 @@
 package xyz.manolos.inmovies.movie
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
@@ -29,7 +29,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
     @Inject
     lateinit var presenter: MoviePresenter
 
-    lateinit var linearLayoutManager: LinearLayoutManager
+    lateinit var linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager
     private var page: Int = 1
     lateinit var movies: ArrayList<Movie>
     lateinit var genres: ArrayList<Genre>
@@ -55,11 +55,11 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
     private fun setupRecyclerview() {
         movies = ArrayList()
-        linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         moviesList.adapter = MovieListAdapter(movies, this)
         moviesList.layoutManager = linearLayoutManager
-        moviesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        moviesList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 var total = linearLayoutManager.itemCount
                 var lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
                 var isNearEnd = total - 1 == lastVisibleItem

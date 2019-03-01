@@ -4,6 +4,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import xyz.manolos.inmovies.model.MovieDao
 import xyz.manolos.inmovies.service.MovieService
 import javax.inject.Inject
 
@@ -11,7 +12,8 @@ private const val API_KEY = "d71ff64de15d4ed68bd780ce30e5b24c"
 
 class MoviePresenter @Inject constructor(
     private val view: MovieView,
-    private val movieService: MovieService
+    private val movieService: MovieService,
+    private val movieDao: MovieDao
 ) {
 
     private val disposables = CompositeDisposable()

@@ -2,8 +2,8 @@ package xyz.manolos.inmovies.movie
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +44,7 @@ class MovieListAdapter(private val movies: List<Movie>,
 
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         fun bindView(movie: Movie) {
             val title = itemView.card_view_title
             val date = itemView.card_view_date

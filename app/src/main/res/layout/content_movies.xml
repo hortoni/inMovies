@@ -1,11 +1,11 @@
-<android.support.v4.widget.SwipeRefreshLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/moviesList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -14,4 +14,4 @@
             android:background="@color/colorPrimary"
     />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
