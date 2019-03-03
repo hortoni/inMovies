@@ -2,11 +2,11 @@ package xyz.manolos.inmovies.movie
 
 import android.content.Context
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_list_item.view.*
 import xyz.manolos.inmovies.detail.DetailActivity
@@ -17,9 +17,13 @@ import xyz.manolos.inmovies.util.DateFormatter
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
 private const val MOVIE = "movie"
 
-class MovieListAdapter(private val movies: List<Movie>,
-                       private val context: Context) : Adapter<MovieListAdapter.ViewHolder>() {
+class MovieListAdapter(private val context: Context) : ListAdapter<Movie, MovieListAdapter.ViewHolder>(DiffCallback()) {
 
+
+    class DiffCallback : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,12 +32,9 @@ class MovieListAdapter(private val movies: List<Movie>,
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return movies.size
-    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val movie = movies[position]
+        val movie = getItem(position)
         holder.bindView(movie)
         holder.itemView.setOnClickListener{
             //

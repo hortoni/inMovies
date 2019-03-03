@@ -53,11 +53,8 @@ class MoviePresenter @Inject constructor(
             .addTo(disposables)
     }
 
-    fun saveMovies(movies: List<Movie>) {
-        movies.forEach {
-            movieDao.insertMovie(it)
-
-        }
+    private fun saveMovies(movies: List<Movie>) {
+        movieDao.insertMovies(movies)
     }
 
     fun observeMovies() : LiveData<List<Movie>> {

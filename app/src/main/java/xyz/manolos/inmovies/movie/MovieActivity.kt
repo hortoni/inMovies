@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
 import xyz.manolos.inmovies.injector
 import xyz.manolos.inmovies.model.Genre
-import xyz.manolos.inmovies.model.Movie
 import xyz.manolos.inmovies.model.ResponseGenres
 import xyz.manolos.inmovies.model.ResponseMovies
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
     lateinit var linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager
     private var page: Int = 1
     lateinit var genres: ArrayList<Genre>
-    lateinit var movies: ArrayList<Movie>
+    lateinit var adapter: MovieListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,22 +44,19 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
         presenter.fetchMovies(page)
         presenter.observeMovies().observe(this, Observer {
-            movies.addAll(it)
-            moviesList.adapter!!.notifyDataSetChanged()
+            adapter.submitList(it)
         })
 
         swipeLayout.setOnRefreshListener {
             presenter.fetchMovies(page)
         }
-
-
     }
 
     private fun setupRecyclerview() {
-        movies = ArrayList()
         linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         moviesList.layoutManager = linearLayoutManager
-        moviesList.adapter = MovieListAdapter(movies, this)
+        adapter = MovieListAdapter(this)
+        moviesList.adapter = adapter
         moviesList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 var total = linearLayoutManager.itemCount

@@ -16,6 +16,9 @@ interface MovieDao {
     @Insert(onConflict = REPLACE)
     fun insertMovie(movie: Movie)
 
+    @Insert(onConflict = REPLACE)
+    fun insertMovies(movies: List<Movie>)
+
     @Update(onConflict = REPLACE)
     fun updateMovie(movie: Movie)
 
