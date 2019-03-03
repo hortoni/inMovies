@@ -1,9 +1,11 @@
 package xyz.manolos.inmovies.movie
 
+import androidx.lifecycle.LiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import xyz.manolos.inmovies.model.Movie
 import xyz.manolos.inmovies.model.MovieDao
 import xyz.manolos.inmovies.service.MovieService
 import javax.inject.Inject
@@ -25,7 +27,7 @@ class MoviePresenter @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
-                    view.showMovies(it)
+                    saveMovies(it.results)
                     view.updatePage(it)
                     view.hideLoading()
                 },
@@ -49,6 +51,17 @@ class MoviePresenter @Inject constructor(
                 }
             )
             .addTo(disposables)
+    }
+
+    fun saveMovies(movies: List<Movie>) {
+        movies.forEach {
+            movieDao.insertMovie(it)
+
+        }
+    }
+
+    fun observeMovies() : LiveData<List<Movie>> {
+        return movieDao.getAllMovies()
     }
 
 }

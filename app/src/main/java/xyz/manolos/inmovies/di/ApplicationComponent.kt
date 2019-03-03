@@ -8,6 +8,7 @@ import xyz.manolos.inmovies.movie.MovieModule
 import javax.inject.Singleton
 
 @Component(modules = [ServiceModule::class, RoomModule::class])
+//@Component(modules = [ServiceModule::class])
 @Singleton
 interface ApplicationComponent {
 
@@ -16,6 +17,7 @@ interface ApplicationComponent {
         @BindsInstance
         fun applicationContext(context: Context): Builder
         fun build(): ApplicationComponent
+
     }
 
     fun plusMovie(movieModule: MovieModule): MovieComponent

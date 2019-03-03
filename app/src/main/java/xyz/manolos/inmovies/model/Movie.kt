@@ -1,9 +1,9 @@
 package xyz.manolos.inmovies.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import android.os.Parcelable
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Named
@@ -14,14 +14,15 @@ import javax.inject.Named
 @Entity(tableName = "movie")
 data class Movie(
 
-    @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true) var id: Long = 0,
+    @ColumnInfo(name = "app_id")
+    @PrimaryKey(autoGenerate = true) var app_id: Long = 0,
 
+    val id: Int?,
     val title: String?,
     val poster_path: String?,
     val backdrop_path: String?,
-    val genre_ids: List<Int>?,
-    var genres: String?,
+//    val genre_ids: List<Int>?,
+//    val genres: String?,
     val overview: String?,
     val release_date: String?
 ) : Parcelable

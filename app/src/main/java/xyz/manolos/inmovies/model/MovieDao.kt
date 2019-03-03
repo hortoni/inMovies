@@ -1,5 +1,6 @@
 package xyz.manolos.inmovies.model
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 
@@ -7,7 +8,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 interface MovieDao {
 
     @Query("select * from movie")
-    fun getAllMovies(): List<Movie>
+    fun getAllMovies(): LiveData<List<Movie>>
 
     @Query("select * from movie where id == :id")
     fun findMovieById(id: Long): Movie

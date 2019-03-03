@@ -1,10 +1,9 @@
 package xyz.manolos.inmovies.movie
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
 import xyz.manolos.inmovies.injector
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 
 interface MovieView {
-    fun showMovies(it: ResponseMovies)
     fun showError(it: Throwable)
     fun showLoading()
     fun hideLoading()
@@ -31,8 +29,8 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
     lateinit var linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager
     private var page: Int = 1
-    lateinit var movies: ArrayList<Movie>
     lateinit var genres: ArrayList<Genre>
+    lateinit var movies: ArrayList<Movie>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,19 +43,24 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
         setupRecyclerview()
 
-        presenter.fetchGenres()
         presenter.fetchMovies(page)
+        presenter.observeMovies().observe(this, Observer {
+            movies.addAll(it)
+            moviesList.adapter!!.notifyDataSetChanged()
+        })
+
         swipeLayout.setOnRefreshListener {
             presenter.fetchMovies(page)
         }
+
 
     }
 
     private fun setupRecyclerview() {
         movies = ArrayList()
         linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        moviesList.adapter = MovieListAdapter(movies, this)
         moviesList.layoutManager = linearLayoutManager
+        moviesList.adapter = MovieListAdapter(movies, this)
         moviesList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 var total = linearLayoutManager.itemCount
@@ -69,14 +72,6 @@ class MovieActivity : AppCompatActivity(), MovieView {
                 }
             }
         })
-    }
-
-    override fun showMovies(it: ResponseMovies) {
-        it.results.forEach {
-            it.genres = "oi"
-        }
-        movies.addAll(it.results)
-        moviesList.adapter!!.notifyDataSetChanged()
     }
 
     override fun updatePage(it: ResponseMovies) {
@@ -102,6 +97,4 @@ class MovieActivity : AppCompatActivity(), MovieView {
     override fun getGenres(it: ResponseGenres) {
         genres = it.genres as ArrayList<Genre>
     }
-
-
 }
