@@ -1,12 +1,17 @@
 package xyz.manolos.inmovies.movie
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import xyz.manolos.inmovies.dao.GenreDao
+import xyz.manolos.inmovies.dao.MovieDao
+import xyz.manolos.inmovies.dao.MovieGenreDao
+import xyz.manolos.inmovies.model.Genre
 import xyz.manolos.inmovies.model.Movie
-import xyz.manolos.inmovies.model.MovieDao
+import xyz.manolos.inmovies.model.MovieGenre
 import xyz.manolos.inmovies.service.MovieService
 import javax.inject.Inject
 
@@ -15,7 +20,9 @@ private const val API_KEY = "d71ff64de15d4ed68bd780ce30e5b24c"
 class MoviePresenter @Inject constructor(
     private val view: MovieView,
     private val movieService: MovieService,
-    private val movieDao: MovieDao
+    private val movieDao: MovieDao,
+    private val genreDao: GenreDao,
+    private val movieGenreDao: MovieGenreDao
 ) {
 
     private val disposables = CompositeDisposable()
@@ -39,15 +46,24 @@ class MoviePresenter @Inject constructor(
             .addTo(disposables)
     }
 
-    fun fetchGenres() {
+    fun fetchGenresAndMovies(page: Int) {
+        view.showLoading()
         movieService.fetchGenres(API_KEY)
+            .flatMap {
+                saveGenres(it.genres)
+                movieService.fetchMovies(API_KEY, page)
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
-                    view.getGenres(it)
+                    saveMovies(it.results)
+                    saveMoviesGenres(it.results)
+                    view.updatePage(it)
+                    view.hideLoading()
                 },
                 onError = {
                     view.showError(it)
+                    view.hideLoading()
                 }
             )
             .addTo(disposables)
@@ -57,8 +73,31 @@ class MoviePresenter @Inject constructor(
         movieDao.insertMovies(movies)
     }
 
+    private fun saveMoviesGenres(movies: List<Movie>) {
+        movies.forEach {
+            movieGenreDao.insertMoviesGenres(getMoviesGenresByMovie(it))
+        }
+    }
+
+    private fun getMoviesGenresByMovie(movie: Movie) : List<MovieGenre> {
+        var list : ArrayList<MovieGenre> = ArrayList()
+        movie.genre_ids?.forEach {
+            var movieGenre =  MovieGenre(0, null, null)
+            movieGenre.id_movie = movie.id
+            Log.e("DEBUG", "movie: "  + movie.id)
+            movieGenre.id_genre = it
+            Log.e("DEBUG", "genre: $it")
+            list.add(movieGenre)
+        }
+        return list
+    }
+
+    private fun saveGenres (genres: List<Genre>) {
+        genreDao.insertGenres(genres)
+
+    }
+
     fun observeMovies() : LiveData<List<Movie>> {
         return movieDao.getAllMovies()
     }
-
 }

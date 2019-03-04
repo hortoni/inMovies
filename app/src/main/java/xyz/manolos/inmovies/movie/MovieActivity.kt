@@ -7,8 +7,6 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
 import xyz.manolos.inmovies.injector
-import xyz.manolos.inmovies.model.Genre
-import xyz.manolos.inmovies.model.ResponseGenres
 import xyz.manolos.inmovies.model.ResponseMovies
 import javax.inject.Inject
 
@@ -18,17 +16,14 @@ interface MovieView {
     fun showLoading()
     fun hideLoading()
     fun updatePage(it: ResponseMovies)
-    fun getGenres(it:ResponseGenres)
 }
 
 class MovieActivity : AppCompatActivity(), MovieView {
 
     @Inject
     lateinit var presenter: MoviePresenter
-
     lateinit var linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager
     private var page: Int = 1
-    lateinit var genres: ArrayList<Genre>
     lateinit var adapter: MovieListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +37,14 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
         setupRecyclerview()
 
-        presenter.fetchMovies(page)
+        presenter.fetchGenresAndMovies(page)
+
         presenter.observeMovies().observe(this, Observer {
             adapter.submitList(it)
         })
 
         swipeLayout.setOnRefreshListener {
-            presenter.fetchMovies(page)
+            presenter.fetchGenresAndMovies(page)
         }
     }
 
@@ -88,9 +84,5 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
     override fun hideLoading() {
         swipeLayout.isRefreshing = false
-    }
-
-    override fun getGenres(it: ResponseGenres) {
-        genres = it.genres as ArrayList<Genre>
     }
 }

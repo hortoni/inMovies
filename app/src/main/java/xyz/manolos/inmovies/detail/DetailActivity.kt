@@ -28,5 +28,8 @@ class DetailActivity : AppCompatActivity() {
             .fit()
             .centerCrop()
             .into(movieImageView)
+
+        //TODO get generos pelo banco
+
     }
 }

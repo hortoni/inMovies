@@ -8,7 +8,6 @@ import xyz.manolos.inmovies.movie.MovieModule
 import javax.inject.Singleton
 
 @Component(modules = [ServiceModule::class, RoomModule::class])
-//@Component(modules = [ServiceModule::class])
 @Singleton
 interface ApplicationComponent {
 

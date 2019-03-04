@@ -1,8 +1,9 @@
-package xyz.manolos.inmovies.model
+package xyz.manolos.inmovies.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
+import xyz.manolos.inmovies.model.Movie
 
 @Dao
 interface MovieDao {
