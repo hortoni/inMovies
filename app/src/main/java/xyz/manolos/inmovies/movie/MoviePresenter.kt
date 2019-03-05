@@ -16,7 +16,7 @@ import xyz.manolos.inmovies.model.MovieGenre
 import xyz.manolos.inmovies.service.MovieService
 import javax.inject.Inject
 
-private const val API_KEY = "d71ff64de15d4ed68bd780ce30e5b24c"
+
 
 class MoviePresenter @Inject constructor(
     private val view: MovieView,
@@ -31,7 +31,7 @@ class MoviePresenter @Inject constructor(
 
     fun fetchMovies(page: Int) {
         view.showLoading()
-        movieService.fetchMovies(API_KEY, page)
+        movieService.fetchMovies(page)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
@@ -49,10 +49,10 @@ class MoviePresenter @Inject constructor(
 
     fun fetchGenresAndMovies(page: Int) {
         view.showLoading()
-        movieService.fetchGenres(API_KEY)
+        movieService.fetchGenres()
             .flatMap {
                 saveGenres(it.genres)
-                movieService.fetchMovies(API_KEY, page)
+                movieService.fetchMovies(page)
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(

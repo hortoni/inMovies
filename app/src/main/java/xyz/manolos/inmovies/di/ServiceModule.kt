@@ -21,7 +21,13 @@ object ServiceModule {
         .client(
             OkHttpClient.Builder().addInterceptor(
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            ).build()
+            ).addInterceptor {
+                var request = it.request()
+                var url = it.request().url().newBuilder().addQueryParameter("api_key", "d71ff64de15d4ed68bd780ce30e5b24c").build()
+                request = request.newBuilder().url(url).build()
+                it.proceed(request)
+            }.build()
+
         )
         .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
         .addConverterFactory(MoshiConverterFactory.create())
