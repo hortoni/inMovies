@@ -15,6 +15,8 @@ import javax.inject.Inject
 
 private const val MOVIE = "movie"
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
+private const val GENRES = "genres"
+
 
 interface DetailView {
     fun showGenres(list: LiveData<List<String>>)
@@ -24,6 +26,8 @@ class DetailActivity : AppCompatActivity(), DetailView {
 
     @Inject
     lateinit var presenter: DetailPresenter
+
+    private lateinit var genres: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +39,9 @@ class DetailActivity : AppCompatActivity(), DetailView {
 
         var movie = intent.getParcelableExtra(MOVIE) as Movie
 
+        genres = savedInstanceState?.getString(GENRES) ?: ""
+        movieGenresTextview.text = genres
+
         movieTitleTextview.text = movie.title
         movieOverviewTextview.text = movie.overview
         movieReleaseDateTextview.text =
@@ -45,7 +52,10 @@ class DetailActivity : AppCompatActivity(), DetailView {
             .centerCrop()
             .into(movieImageView)
 
-        presenter.observeGenres(movie)
+        if (genres.isBlank()) {
+            presenter.observeGenres(movie)
+        }
+
     }
 
     override fun showGenres(list: LiveData<List<String>>) {
@@ -56,7 +66,11 @@ class DetailActivity : AppCompatActivity(), DetailView {
             }
             movieGenresTextview.text = text
         })
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(GENRES, genres)
     }
 
 }
