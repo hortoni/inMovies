@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
 data class Genre(
 
     @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true) var id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String?
 )
 

@@ -10,9 +10,9 @@ import androidx.room.PrimaryKey
 data class MovieGenre(
 
     @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
 
-    var id_movie: Long? = null,
-    var id_genre: Long? = null
+    val id_movie: Long,
+    val id_genre: Long
 )
 

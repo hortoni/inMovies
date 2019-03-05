@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
 import xyz.manolos.inmovies.R
@@ -23,11 +25,12 @@ class MovieActivity : AppCompatActivity(), MovieView {
 
     @Inject
     lateinit var presenter: MoviePresenter
-    lateinit var linearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
     private var page: Int = 1
-    lateinit var adapter: MovieListAdapter
+    private lateinit var adapter: MovieListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(xyz.manolos.inmovies.R.layout.activity_movies)
         setSupportActionBar(toolbar)
@@ -50,12 +53,12 @@ class MovieActivity : AppCompatActivity(), MovieView {
     }
 
     private fun setupRecyclerview() {
-        linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        linearLayoutManager = LinearLayoutManager(this)
         moviesList.layoutManager = linearLayoutManager
         adapter = MovieListAdapter(this)
         moviesList.adapter = adapter
-        moviesList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+        moviesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 var total = linearLayoutManager.itemCount
                 var lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
                 var isNearEnd = total - 1 == lastVisibleItem
@@ -68,7 +71,7 @@ class MovieActivity : AppCompatActivity(), MovieView {
     }
 
     override fun updatePage(it: ResponseMovies) {
-        if (it.total_pages == page) {
+        if (it.totalPages == page) {
             page = -1
         } else {
             page ++

@@ -1,7 +1,6 @@
 package xyz.manolos.inmovies.movie
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_list_item.view.*
+import xyz.manolos.inmovies.R
 import xyz.manolos.inmovies.detail.DetailActivity
 import xyz.manolos.inmovies.model.Movie
 import xyz.manolos.inmovies.util.DateFormatter
@@ -27,7 +27,7 @@ class MovieListAdapter(private val context: Context) : ListAdapter<Movie, MovieL
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(xyz.manolos.inmovies.R.layout.movie_list_item, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.movie_list_item, parent, false)
 
         return ViewHolder(view)
     }
@@ -36,27 +36,22 @@ class MovieListAdapter(private val context: Context) : ListAdapter<Movie, MovieL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = getItem(position)
         holder.bindView(movie)
-        holder.itemView.setOnClickListener{
-            //
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(MOVIE, movie)
-            context.startActivity(intent)
+        holder.itemView.setOnClickListener {
+            context.startActivity(DetailActivity.newIntent(context, movie))
         }
 
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         fun bindView(movie: Movie) {
-            val title = itemView.card_view_title
-            val date = itemView.card_view_date
             val image = itemView.card_view_image
 
-            title.text = movie.title
-            date.text =  DateFormatter.formatDate(movie.release_date)
+            itemView.card_view_title.text = movie.title
+            itemView.card_view_date.text = DateFormatter.formatDate(movie.releaseDate)
 
 
             Picasso.get()
-                .load(String.format(IMAGE_URL, movie.backdrop_path) )
+                .load(IMAGE_URL.format(movie.backdropPath))
                 .fit()
                 .centerCrop()
                 .into(image)

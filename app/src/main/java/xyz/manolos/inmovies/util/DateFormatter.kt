@@ -1,14 +1,12 @@
 package xyz.manolos.inmovies.util
 
 import java.text.SimpleDateFormat
+import java.util.*
 
 object DateFormatter {
 
     fun formatDate (date :String? ) : String {
-        var format = SimpleDateFormat("yyyy-MM-dd")
-        val newDate = format.parse(date)
-
-        format = SimpleDateFormat("dd/MM/yyyy")
-        return format.format(newDate)
+        val newDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
+        return SimpleDateFormat("dd/MM/yyyy").format(newDate)
     }
 }

@@ -1,21 +1,20 @@
 package xyz.manolos.inmovies.movie
 
 import androidx.lifecycle.LiveData
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import xyz.manolos.inmovies.dao.GenreDao
-import xyz.manolos.inmovies.dao.MovieDao
-import xyz.manolos.inmovies.dao.MovieGenreDao
+import xyz.manolos.inmovies.database.GenreDao
+import xyz.manolos.inmovies.database.MovieDao
+import xyz.manolos.inmovies.database.MovieGenreDao
 import xyz.manolos.inmovies.model.Genre
 import xyz.manolos.inmovies.model.Movie
 import xyz.manolos.inmovies.model.MovieGenre
+import xyz.manolos.inmovies.model.ResponseMovies
 import xyz.manolos.inmovies.service.MovieService
 import javax.inject.Inject
-
 
 
 class MoviePresenter @Inject constructor(
@@ -36,12 +35,10 @@ class MoviePresenter @Inject constructor(
             .subscribeBy(
                 onSuccess = {
                     saveMovies(it.results)
-                    view.updatePage(it)
-                    view.hideLoading()
+                    updatePageAndHideLoading(it)
                 },
                 onError = {
-                    view.showError()
-                    view.hideLoading()
+                    showErrorAndHideLoading()
                 }
             )
             .addTo(disposables)
@@ -58,54 +55,53 @@ class MoviePresenter @Inject constructor(
             .subscribeBy(
                 onSuccess = {
                     saveMovies(it.results)
-                    view.updatePage(it)
-                    view.hideLoading()
+                    updatePageAndHideLoading(it)
                 },
                 onError = {
-                    view.showError()
-                    view.hideLoading()
+                    showErrorAndHideLoading()
                 }
             )
             .addTo(disposables)
     }
 
+    fun observeMovies(): LiveData<List<Movie>> {
+        return movieDao.getAllMovies()
+    }
+
     private fun saveMovies(movies: List<Movie>) {
-        Single.fromCallable { movieDao.insertMovies(movies) }
+        movieDao.insertMovies(movies)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
 
         saveMoviesGenres(movies)
+    }
 
+    private fun saveGenres(genres: List<Genre>) {
+        genreDao.insertGenres(genres)
+            .subscribeOn(Schedulers.io())
+            .subscribe()
     }
 
     private fun saveMoviesGenres(movies: List<Movie>) {
-        movies.forEach {
-            Single.fromCallable { movieGenreDao.insertMoviesGenres(getMoviesGenresByMovie(it)) }
+        movies.map {
+            movieGenreDao.insertMoviesGenres(getMoviesGenresByMovie(it))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
-
         }
     }
 
-    private fun getMoviesGenresByMovie(movie: Movie) : List<MovieGenre>{
-        var list = ArrayList<MovieGenre>()
-        movie.genre_ids?.forEach {
-            list.add(MovieGenre(null, movie.id, it))
-        }
-        return list
+    private fun getMoviesGenresByMovie(movie: Movie): List<MovieGenre> {
+        return movie.genreIds.map { MovieGenre(id_movie = movie.id, id_genre = it) }
     }
 
-    private fun saveGenres (genres: List<Genre>) {
-        Single.fromCallable { genreDao.insertGenres(genres) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
-
+    private fun updatePageAndHideLoading(it: ResponseMovies) {
+        view.updatePage(it)
+        view.hideLoading()
     }
 
-    fun observeMovies() : LiveData<List<Movie>> {
-        return movieDao.getAllMovies()
+    private fun showErrorAndHideLoading() {
+        view.showError()
+        view.hideLoading()
     }
+
 }

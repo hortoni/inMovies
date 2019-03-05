@@ -11,11 +11,10 @@ import org.mockito.BDDMockito
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
-import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
-import xyz.manolos.inmovies.dao.GenreDao
-import xyz.manolos.inmovies.dao.MovieDao
-import xyz.manolos.inmovies.dao.MovieGenreDao
+import xyz.manolos.inmovies.database.GenreDao
+import xyz.manolos.inmovies.database.MovieDao
+import xyz.manolos.inmovies.database.MovieGenreDao
 import xyz.manolos.inmovies.model.ResponseMovies
 import xyz.manolos.inmovies.service.MovieService
 
@@ -32,13 +31,13 @@ class MoviePresenterTest {
     @InjectMocks
     private lateinit var presenter: MoviePresenter
 
-    @Spy
+    @Mock
     private lateinit var movieDao: MovieDao
 
-    @Spy
+    @Mock
     private lateinit var genreDao: GenreDao
 
-    @Spy
+    @Mock
     private lateinit var movieGenreDao: MovieGenreDao
 
     @Before

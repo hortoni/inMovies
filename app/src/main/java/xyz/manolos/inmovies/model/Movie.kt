@@ -5,23 +5,22 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 @Entity(tableName = "movie")
-data class Movie(
+data class Movie @JvmOverloads constructor(
 
     @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true) var id: Long,
-    var title: String?,
-    var poster_path: String?,
-    var backdrop_path: String?,
-    var overview: String?,
-    var release_date: String?,
-    @Ignore var genre_ids: List<Long>
-) : Parcelable {
-    constructor() : this(0, "", "", "", "", "", emptyList() )
-}
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val title: String?,
+    @Json(name = "poster_path") val posterPath: String?,
+    @Json(name = "backdrop_path") val backdropPath: String?,
+    val overview: String?,
+    @Json(name = "release_date") val releaseDate: String?,
+    @Json(name = "genre_ids") @Ignore var genreIds: List<Long> = emptyList()
+) : Parcelable
 

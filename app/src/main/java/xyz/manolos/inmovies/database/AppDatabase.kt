@@ -1,4 +1,4 @@
-package xyz.manolos.inmovies.dao
+package xyz.manolos.inmovies.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

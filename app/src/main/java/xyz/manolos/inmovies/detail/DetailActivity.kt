@@ -1,5 +1,7 @@
 package xyz.manolos.inmovies.detail
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -15,8 +17,6 @@ import javax.inject.Inject
 
 private const val MOVIE = "movie"
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
-private const val GENRES = "genres"
-
 
 interface DetailView {
     fun showGenres(list: LiveData<List<String>>)
@@ -24,10 +24,16 @@ interface DetailView {
 
 class DetailActivity : AppCompatActivity(), DetailView {
 
+    companion object {
+        fun newIntent(context: Context, movie: Movie): Intent {
+            return Intent(context, DetailActivity::class.java).apply {
+                putExtra(MOVIE, movie)
+            }
+        }
+    }
+
     @Inject
     lateinit var presenter: DetailPresenter
-
-    private lateinit var genres: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,40 +43,30 @@ class DetailActivity : AppCompatActivity(), DetailView {
             .plusDetail(DetailModule(this))
             .inject(this)
 
-        var movie = intent.getParcelableExtra(MOVIE) as Movie
+        val movie = intent.getParcelableExtra(MOVIE) as Movie
 
-        genres = savedInstanceState?.getString(GENRES) ?: ""
-        movieGenresTextview.text = genres
+        setupView(movie)
 
+        presenter.observeGenres(movie)
+    }
+
+    private fun setupView(movie: Movie) {
         movieTitleTextview.text = movie.title
         movieOverviewTextview.text = movie.overview
         movieReleaseDateTextview.text =
-            String.format(getString(R.string.release_date), DateFormatter.formatDate(movie.release_date))
+            String.format(getString(R.string.release_date), DateFormatter.formatDate(movie.releaseDate))
+
         Picasso.get()
-            .load(String.format(IMAGE_URL, movie.poster_path))
+            .load(IMAGE_URL.format(movie.posterPath))
             .fit()
             .centerCrop()
             .into(movieImageView)
-
-        if (genres.isBlank()) {
-            presenter.observeGenres(movie)
-        }
-
     }
 
     override fun showGenres(list: LiveData<List<String>>) {
-        var text: String
         list.observe(this, Observer {
-            text = it.joinToString {
-                it
-            }
-            movieGenresTextview.text = text
+            movieGenresTextview.text = it.joinToString()
         })
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(GENRES, genres)
     }
 
 }
