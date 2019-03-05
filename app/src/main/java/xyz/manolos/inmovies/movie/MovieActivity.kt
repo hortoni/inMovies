@@ -1,18 +1,19 @@
 package xyz.manolos.inmovies.movie
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_movies.*
 import kotlinx.android.synthetic.main.content_movies.*
+import xyz.manolos.inmovies.R
 import xyz.manolos.inmovies.injector
 import xyz.manolos.inmovies.model.ResponseMovies
 import javax.inject.Inject
 
 
 interface MovieView {
-    fun showError(it: Throwable)
+    fun showError()
     fun showLoading()
     fun hideLoading()
     fun updatePage(it: ResponseMovies)
@@ -74,8 +75,8 @@ class MovieActivity : AppCompatActivity(), MovieView {
         }
     }
 
-    override fun showError(it: Throwable) {
-        Log.e("DEBUG", "error: " + it.message)
+    override fun showError() {
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
     }
 
     override fun showLoading() {

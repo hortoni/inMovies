@@ -40,7 +40,7 @@ class MoviePresenter @Inject constructor(
                     view.hideLoading()
                 },
                 onError = {
-                    view.showError(it)
+                    view.showError()
                     view.hideLoading()
                 }
             )
@@ -62,7 +62,7 @@ class MoviePresenter @Inject constructor(
                     view.hideLoading()
                 },
                 onError = {
-                    view.showError(it)
+                    view.showError()
                     view.hideLoading()
                 }
             )
