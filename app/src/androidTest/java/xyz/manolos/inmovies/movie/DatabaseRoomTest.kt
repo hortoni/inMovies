@@ -57,7 +57,7 @@ class DatabaseRoomTest {
     fun shouldReturnNotEmptyMovieList() {
         val list = ArrayList<Movie>()
         list.add(Movie(1, "title", null, null, null, null, emptyList()))
-        movieDao.insertMovies(list)
+        movieDao.insertMovies(list).subscribe()
         val allMovies = movieDao.getAllMovies()
         allMovies.observeForever {
             Assert.assertFalse(it.isEmpty())
@@ -71,7 +71,7 @@ class DatabaseRoomTest {
         list.add(Movie(2, "title2", null, null, null, null, emptyList()))
         list.add(Movie(3, "title3", null, null, null, null, emptyList()))
 
-        movieDao.insertMovies(list)
+        movieDao.insertMovies(list).subscribe()
         val allMovies = movieDao.getAllMovies()
         allMovies.observeForever {
             Assert.assertTrue(it.size == 3)
@@ -90,7 +90,7 @@ class DatabaseRoomTest {
     fun shouldReturnNotEmptyGenreList() {
         val list = ArrayList<Genre>()
         list.add(Genre(1, "genre"))
-        genreDao.insertGenres(list)
+        genreDao.insertGenres(list).subscribe()
         val allGenres = genreDao.getAllGenres()
         allGenres.observeForever {
             Assert.assertFalse(it.isEmpty())
@@ -104,7 +104,7 @@ class DatabaseRoomTest {
         list.add(Genre(2, "genre2"))
         list.add(Genre(3, "genre3"))
 
-        genreDao.insertGenres(list)
+        genreDao.insertGenres(list).subscribe()
         val allGenres = genreDao.getAllGenres()
         allGenres.observeForever {
             Assert.assertTrue(it.size == 3)
@@ -117,19 +117,19 @@ class DatabaseRoomTest {
         val genreList = ArrayList<Genre>()
         genreList.add(Genre(1, "title1"))
         genreList.add(Genre(2, "title2"))
-        genreDao.insertGenres(genreList)
+        genreDao.insertGenres(genreList).subscribe()
 
         val genreListFromMovie = ArrayList<Long>()
         genreListFromMovie.add(1)
         genreListFromMovie.add(2)
         val list = ArrayList<Movie>()
         list.add(Movie(1, "title1", null, null, null, null, genreListFromMovie ))
-        movieDao.insertMovies(list)
+        movieDao.insertMovies(list).subscribe()
 
         val moviesGenresList = ArrayList<MovieGenre>()
         moviesGenresList.add(MovieGenre( 1, 1, 1))
         moviesGenresList.add(MovieGenre( 2, 1, 2))
-        movieGenreDao.insertMoviesGenres(moviesGenresList)
+        movieGenreDao.insertMoviesGenres(moviesGenresList).subscribe()
 
         val genresNamesList = movieGenreDao.findGenresNamesByMovie(1)
         genresNamesList.observeForever{
