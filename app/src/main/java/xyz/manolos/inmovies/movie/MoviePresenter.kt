@@ -57,7 +57,7 @@ class MoviePresenter @Inject constructor(
             .subscribeBy(
                 onSuccess = {
                     saveMovies(it.results)
-                    saveMoviesGenres(it.results)
+//                    saveMoviesGenres(it.results)
                     view.updatePage(it)
                     view.hideLoading()
                 },
@@ -71,6 +71,7 @@ class MoviePresenter @Inject constructor(
 
     private fun saveMovies(movies: List<Movie>) {
         movieDao.insertMovies(movies)
+        saveMoviesGenres(movies)
     }
 
     private fun saveMoviesGenres(movies: List<Movie>) {
