@@ -79,15 +79,12 @@ class MoviePresenter @Inject constructor(
         }
     }
 
-    private fun getMoviesGenresByMovie(movie: Movie) : List<MovieGenre> {
-        var list : ArrayList<MovieGenre> = ArrayList()
+    private fun getMoviesGenresByMovie(movie: Movie) : List<MovieGenre>{
+        var list = ArrayList<MovieGenre>()
         movie.genre_ids?.forEach {
-            var movieGenre =  MovieGenre(0, null, null)
-            movieGenre.id_movie = movie.id
-            Log.e("DEBUG", "movie: "  + movie.id)
-            movieGenre.id_genre = it
-            Log.e("DEBUG", "genre: $it")
-            list.add(movieGenre)
+            Log.e("DEBUG", movie.id.toString())
+            Log.e("DEBUG", it.toString())
+            list.add(MovieGenre(null, movie.id, it))
         }
         return list
     }

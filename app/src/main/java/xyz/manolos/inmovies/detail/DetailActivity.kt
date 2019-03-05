@@ -5,31 +5,55 @@ import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail.*
 import xyz.manolos.inmovies.R
+import xyz.manolos.inmovies.injector
 import xyz.manolos.inmovies.model.Movie
 import xyz.manolos.inmovies.util.DateFormatter
+import javax.inject.Inject
 
 
 private const val MOVIE = "movie"
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
 
-class DetailActivity : AppCompatActivity() {
+interface DetailView {
+    fun showGenres(findGenresByMovieId: List<String>)
+}
+
+class DetailActivity : AppCompatActivity(), DetailView {
+
+    @Inject
+    lateinit var presenter: DetailPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
+        injector
+            .plusDetail(DetailModule(this))
+            .inject(this)
+
         var movie = intent.getParcelableExtra(MOVIE) as Movie
 
-        movieTitleTextview.text =  movie.title
+        movieTitleTextview.text = movie.title
         movieOverviewTextview.text = movie.overview
-        movieReleaseDateTextview.text =  String.format(getString(R.string.release_date), DateFormatter.formatDate(movie.release_date))
+        movieReleaseDateTextview.text =
+            String.format(getString(R.string.release_date), DateFormatter.formatDate(movie.release_date))
         Picasso.get()
-            .load(String.format(IMAGE_URL, movie.poster_path) )
+            .load(String.format(IMAGE_URL, movie.poster_path))
             .fit()
             .centerCrop()
             .into(movieImageView)
 
-        //TODO get generos pelo banco
+        presenter.getGenres(movie)
 
+    }
+
+    override fun showGenres(list: List<String>) {
+        var text = ""
+        list.forEach {
+            text = list.joinToString {
+                it
+            }
+        }
+        movieGenresTextview.text = text
     }
 }

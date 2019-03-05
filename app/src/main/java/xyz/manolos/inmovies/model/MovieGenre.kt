@@ -6,14 +6,15 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "movie_genre",
-    indices = [Index(value = ["id_movie", "id_genre"], unique = true)]
-)
+    indices = [Index(value = ["id_movie", "id_genre"], unique = true)])
 data class MovieGenre(
 
     @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true) var id: Long? = 0,
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
 
     var id_movie: Long? = null,
     var id_genre: Long? = null
-)
+) {
+//    constructor() : this(id_movie = id_movie, id_genre =  id_genre)
+}
 
