@@ -9,7 +9,7 @@ import xyz.manolos.inmovies.model.MovieGenre
 interface MovieGenreDao {
 
     @Query("select * from movie_genre")
-    fun getAllGenres(): List<MovieGenre>
+    fun getAllMoviesGenres(): LiveData<List<MovieGenre>>
 
     @Query("select * from movie_genre where id_movie == :movie_id")
     fun findGenresByMovieId(movie_id: Long): List<MovieGenre>

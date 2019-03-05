@@ -22,7 +22,6 @@ data class Movie(
     var release_date: String?,
     @Ignore var genre_ids: List<Long>
 ) : Parcelable {
-
     constructor() : this(0, "", "", "", "", "", emptyList() )
 }
 

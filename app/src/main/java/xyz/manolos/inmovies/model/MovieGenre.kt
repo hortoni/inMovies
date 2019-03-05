@@ -14,7 +14,5 @@ data class MovieGenre(
 
     var id_movie: Long? = null,
     var id_genre: Long? = null
-) {
-//    constructor() : this(id_movie = id_movie, id_genre =  id_genre)
-}
+)
 

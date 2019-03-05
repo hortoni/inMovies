@@ -70,9 +70,6 @@ class MoviePresenter @Inject constructor(
     }
 
     private fun saveMovies(movies: List<Movie>) {
-//        movieDao.insertMovies(movies)
-//        saveMoviesGenres(movies)
-
         Single.fromCallable { movieDao.insertMovies(movies) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
