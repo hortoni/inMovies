@@ -15,7 +15,7 @@ object RoomModule {
     @JvmStatic
     @Singleton
     fun providesAppDatabase(context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "inmovies-db").allowMainThreadQueries().build()
+        Room.databaseBuilder(context, AppDatabase::class.java, "inmovies-db").build()
 
     @Provides
     @JvmStatic

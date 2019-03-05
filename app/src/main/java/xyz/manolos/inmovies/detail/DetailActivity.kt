@@ -2,6 +2,8 @@ package xyz.manolos.inmovies.detail
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail.*
 import xyz.manolos.inmovies.R
@@ -15,7 +17,7 @@ private const val MOVIE = "movie"
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500/%s"
 
 interface DetailView {
-    fun showGenres(findGenresByMovieId: List<String>)
+    fun showGenres(list: LiveData<List<String>>)
 }
 
 class DetailActivity : AppCompatActivity(), DetailView {
@@ -43,17 +45,18 @@ class DetailActivity : AppCompatActivity(), DetailView {
             .centerCrop()
             .into(movieImageView)
 
-        presenter.getGenres(movie)
-
+        presenter.observeGenres(movie)
     }
 
-    override fun showGenres(list: List<String>) {
-        var text = ""
-        list.forEach {
-            text = list.joinToString {
+    override fun showGenres(list: LiveData<List<String>>) {
+        var text: String
+        list.observe(this, Observer {
+            text = it.joinToString {
                 it
             }
-        }
-        movieGenresTextview.text = text
+            movieGenresTextview.text = text
+        })
+
     }
+
 }

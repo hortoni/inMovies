@@ -1,5 +1,6 @@
 package xyz.manolos.inmovies.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import xyz.manolos.inmovies.model.MovieGenre
@@ -14,7 +15,7 @@ interface MovieGenreDao {
     fun findGenresByMovieId(movie_id: Long): List<MovieGenre>
 
     @Query("select genre.name from movie_genre inner join genre on movie_genre.id_genre = genre.id where movie_genre.id_movie == :movie_id")
-    fun findGenresNamesByMovieId(movie_id: Long): List<String>
+    fun findGenresNamesByMovie(movie_id: Long): LiveData<List<String>>
 
     @Insert(onConflict = REPLACE)
     fun insertMovieGenre(movieGenre: MovieGenre)

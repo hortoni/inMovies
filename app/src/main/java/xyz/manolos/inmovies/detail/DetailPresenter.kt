@@ -10,8 +10,16 @@ class DetailPresenter @Inject constructor(
     private val movieGenreDao: MovieGenreDao
 ) {
 
-    fun getGenres (movie: Movie){
-        view.showGenres(movieGenreDao.findGenresNamesByMovieId(movie.id))
+//    fun getGenres (movie: Movie){
+//        view.showGenres(movieGenreDao.findGenresNamesByMovieId(movie.id))
+//    }
+
+    fun observeGenres(movie: Movie) {
+        view.showGenres(movieGenreDao.findGenresNamesByMovie(movie.id))
     }
+
+//    fun observeGenres(movie: Movie) : LiveData<List<String>> {
+//        return movieGenreDao.findGenresNamesByMovie(movie.id)
+//    }
 
 }

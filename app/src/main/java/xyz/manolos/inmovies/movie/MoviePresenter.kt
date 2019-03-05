@@ -1,11 +1,12 @@
 package xyz.manolos.inmovies.movie
 
-import android.util.Log
 import androidx.lifecycle.LiveData
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import xyz.manolos.inmovies.dao.GenreDao
 import xyz.manolos.inmovies.dao.MovieDao
 import xyz.manolos.inmovies.dao.MovieGenreDao
@@ -57,7 +58,6 @@ class MoviePresenter @Inject constructor(
             .subscribeBy(
                 onSuccess = {
                     saveMovies(it.results)
-//                    saveMoviesGenres(it.results)
                     view.updatePage(it)
                     view.hideLoading()
                 },
@@ -70,28 +70,41 @@ class MoviePresenter @Inject constructor(
     }
 
     private fun saveMovies(movies: List<Movie>) {
-        movieDao.insertMovies(movies)
+//        movieDao.insertMovies(movies)
+//        saveMoviesGenres(movies)
+
+        Single.fromCallable { movieDao.insertMovies(movies) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+
         saveMoviesGenres(movies)
+
     }
 
     private fun saveMoviesGenres(movies: List<Movie>) {
         movies.forEach {
-            movieGenreDao.insertMoviesGenres(getMoviesGenresByMovie(it))
+            Single.fromCallable { movieGenreDao.insertMoviesGenres(getMoviesGenresByMovie(it)) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+
         }
     }
 
     private fun getMoviesGenresByMovie(movie: Movie) : List<MovieGenre>{
         var list = ArrayList<MovieGenre>()
         movie.genre_ids?.forEach {
-            Log.e("DEBUG", movie.id.toString())
-            Log.e("DEBUG", it.toString())
             list.add(MovieGenre(null, movie.id, it))
         }
         return list
     }
 
     private fun saveGenres (genres: List<Genre>) {
-        genreDao.insertGenres(genres)
+        Single.fromCallable { genreDao.insertGenres(genres) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
 
     }
 
